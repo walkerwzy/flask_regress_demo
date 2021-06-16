@@ -5,6 +5,7 @@ from flask import jsonify
 from flask import flash
 import joblib
 import numpy as np
+import os
 
 app = Flask(__name__)
 
@@ -28,4 +29,6 @@ def predict(income, age, rooms, bedrooms, population):
 app.secret_key = 'super secret key'
 
 if __name__ == '__main__':
-	app.run()
+	host = '0.0.0.0'
+	port = int(os.environ.get('PORT'))
+	app.run(host=host, port=port)
