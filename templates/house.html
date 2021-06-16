@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block css %}
+<style>
+    #wramper { width:600px; margin:60px auto; }
+    .format {margin: 8px; color: red; font-weight: 600;}
+	.quote {color:#ttt; background:#eee; padding:15px; width:450px; }
+	.query-box {width:430px; height:24px; line-height:24px; color:#333; font-size:17px}
+	.result {color: #826; background: #fee; padding: 15px; width: 450px;}
+	.rst { display: none; }
+	div{ margin:10px; }
+</style>
+{% endblock%}
+{% block content %}
+<div>please input the querys like demo, all params is necessary</div>
+<div class='quote'>
+	<ul>
+		<li>Avg. Area Income</li>
+		<li>Avg. Area House Age</li>
+		<li>Avg. Area Number of Rooms</li>
+		<li>Avg. Area Number of Bedrooms</li>
+		<li>Area Population</li>
+	</ul>
+</div>
+<p>valid format:</p>
+<div class='quote'>
+    61287.06 / 5.865890	/ 8.512727 / 5.13 / 36882.16
+    <p class='format'>OR</p>
+    61287.06  5.865890  8.512727   5.13   36882.16
+    <p class='format'>OR</p>
+    61287.06, 5.865890,  8.512727,  5.13, 36882.16
+</div>
+<form action="/" method="post" onsubmit="return validate();">
+    <input type="text" name="query" id="query" class="query-box" />
+    <input type="submit" value="query" />
+</form>
+<p class='rst'>result:</p>
+<div class="result rst" id="result"></div>
+{% endblock %}
+
+{% block footer %}
+<script>
+	function validate() {
+		v = document.getElementById('query').value
+		if(v.indexOf('/') < 0) {
+			v = v.replace(/[\s,]+/g, '/')
+		} 
+		q = v.split('/');
+		if(q.length != 5){
+			alert('please input enough conditions.')
+			return false;
+			}
+		q.forEach( m => {
+			if(Number.isNaN(m)) {
+				alert(m + " should be a number.");
+				return false;
+			}
+		});
+		href = '/predict/' + v.replace(/\s/g,'');
+		// ajax
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+		       Array.from(document.getElementsByClassName('rst')).forEach(m=>m.style['display']='block');
+		    if (this.readyState == 4 && this.status == 200) {
+		       // Typical action to be performed when the document is ready:
+		      	document.getElementById("result").innerHTML = xhttp.responseText;
+		    }else {
+		    	document.getElementById("result").innerHTML = this.status + ', please check input';
+		    }
+		};
+		xhttp.onerror = function(a,b,c) {
+			console.log(a, b, c)
+	    	document.getElementById("result").innerHTML = a;
+		}
+		xhttp.open("GET", href, true);
+		xhttp.send();
+		return false;
+	}
+</script>
+{% endblock %}

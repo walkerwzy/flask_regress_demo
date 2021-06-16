@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="style.css" />
+     {% block css %}{% endblock %}
+    <title>{% block title %}{% endblock %} - My Webpage</title>
+    {% endblock %}
+</head>
+<body>
+    <div id="wramper">
+        <div id="header">{% include 'header.html' %}</div>
+        <div id="content">
+            {% include 'flash.html' %}
+            {% block content %}{% endblock %}
+        </div>
+        <div id="footer">
+            {% block footer %}
+            &copy; Copyright 2008 by <a href="https://wzy.one">walker</a>.
+            {% endblock %}
+        </div>
+        {% include 'footer.html' %}
+    </div>
+</body>
+</html>
